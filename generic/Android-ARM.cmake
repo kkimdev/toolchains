@@ -18,20 +18,21 @@
 set(CMAKE_SYSTEM_NAME Android)
 set(ANDROID_ARCHITECTURE "arm")
 set(ANDROID_ABI "armeabi-v7a")
+set(ANDROID_TARGET "armv7-none-linux-androideabi")
 
 # NDK root
 set(ANDROID_NDK_ROOT "/opt/android-ndk")
 
 # API level to use
-set(ANDROID_SYSROOT "${ANDROID_NDK_ROOT}/platforms/android-19/arch-${ANDROID_ARCHITECTURE}")
+set(ANDROID_SYSROOT "${ANDROID_NDK_ROOT}/platforms/android-21/arch-${ANDROID_ARCHITECTURE}")
 
 # Toolchain. See ${ANDROID_NDK_ROOT}/toolchains/ for complete list
-set(ANDROID_TOOLCHAIN "arm-linux-androideabi-4.8")
-set(ANDROID_TOOLCHAIN_PREFIX "arm-linux-androideabi")
+set(ANDROID_TOOLCHAIN "llvm")
+set(ANDROID_GCC_TOOLCHAIN "arm-linux-androideabi-4.9")
 set(ANDROID_TOOLCHAIN_ROOT "${ANDROID_NDK_ROOT}/toolchains/${ANDROID_TOOLCHAIN}/prebuilt/linux-x86_64/")
 
-set(CMAKE_C_COMPILER "${ANDROID_TOOLCHAIN_ROOT}/bin/${ANDROID_TOOLCHAIN_PREFIX}-gcc")
-set(CMAKE_CXX_COMPILER "${ANDROID_TOOLCHAIN_ROOT}/bin/${ANDROID_TOOLCHAIN_PREFIX}-g++")
+set(CMAKE_C_COMPILER "${ANDROID_TOOLCHAIN_ROOT}/bin/clang")
+set(CMAKE_CXX_COMPILER "${ANDROID_TOOLCHAIN_ROOT}/bin/clang++")
 set(CMAKE_FIND_ROOT_PATH ${CMAKE_FIND_ROOT_PATH}
     "${ANDROID_SYSROOT}"
     "${ANDROID_TOOLCHAIN_ROOT}")

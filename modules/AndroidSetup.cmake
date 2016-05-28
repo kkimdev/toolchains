@@ -36,8 +36,8 @@ endif()
 set(ANDROID_LINKER_FLAGS "${ANDROID_LINKER_FLAGS} -no-canonical-prefixes")
 
 # Specify sysroot so the compiler and linker can find stuff
-set(ANDROID_COMPILER_FLAGS "${ANDROID_COMPILER_FLAGS} --sysroot=${ANDROID_SYSROOT}")
-set(ANDROID_LINKER_FLAGS "${ANDROID_LINKER_FLAGS} --sysroot=${ANDROID_SYSROOT}")
+set(ANDROID_COMPILER_FLAGS "${ANDROID_COMPILER_FLAGS} --sysroot=${ANDROID_SYSROOT} -target ${ANDROID_TARGET} -gcc-toolchain ${ANDROID_NDK_ROOT}/toolchains/${ANDROID_GCC_TOOLCHAIN}/prebuilt/linux-x86_64")
+set(ANDROID_LINKER_FLAGS "${ANDROID_LINKER_FLAGS} --sysroot=${ANDROID_SYSROOT} -target ${ANDROID_TARGET}")
 
 # Disallow undefined symbols, memory corruption mitigation, etc.
 # This is needed to ensure that everything is really linked in, because it
@@ -52,8 +52,9 @@ set(CMAKE_CXX_FLAGS "${ANDROID_COMPILER_FLAGS}" CACHE STRING "CXX compiler flags
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}" CACHE STRING "Shared library linker flags")
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}" CACHE STRING "Module linker flags")
 
-# Use static GCC's libstdc++ to have exceptions and RTTI
-set(CMAKE_CXX_CREATE_SHARED_LIBRARY "<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> -L${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/4.8/libs/${ANDROID_ABI} <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES> -lgnustl_static -lsupc++")
+# Use static LLVM libc++ to have proper C++11 support with std::stoi() etc
+set(CMAKE_CXX_CREATE_SHARED_LIBRARY "<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> -L${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI} <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES> -lc++_static")
 include_directories(SYSTEM
-    "${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/4.8/include"
-    "${ANDROID_NDK_ROOT}/sources/cxx-stl/gnu-libstdc++/4.8/libs/${ANDROID_ABI}/include")
+    "${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libcxx/include"
+    "${ANDROID_NDK_ROOT}/sources/android/support/include"
+    "${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++abi/libcxxabi/include")
